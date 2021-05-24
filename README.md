@@ -1,6 +1,6 @@
 # zjuhealth
 
-Forked from https://github.com/mkmark/zjuhealth/blob/master/hitcarder.py
+Forked from [Tishacy/ZJU-nCov-Hitcarder](https://github.com/Tishacy/ZJU-nCov-Hitcarder)
 
 CLI version for better implementation with crontab, schtasks, etc.
 
