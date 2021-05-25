@@ -174,7 +174,7 @@ class Telegram_bot():
         else:
             requests.get(url)
 
-# %% dingding bot
+# %% dingtalk bot
 import time
 import hmac
 import hashlib
@@ -216,13 +216,13 @@ parser.add_argument("--telegram-proxy", default = "", \
                           dest = "TELEGRAM_PROXY", \
                           help = "telegram proxy like \'socks5://127.0.0.1:1080\'", \
                           required = False)
-parser.add_argument("--dingding-token", default = "", \
-                          dest = "DINGDING_TOKEN", \
-                          help = "dingding access_token, see https://developers.dingtalk.com/document/app/custom-robot-access", \
+parser.add_argument("--dingtalk-token", default = "", \
+                          dest = "DINGTALK_TOKEN", \
+                          help = "dingtalk access_token, see https://developers.dingtalk.com/document/app/custom-robot-access", \
                           required = False)
-parser.add_argument("--dingding-secret", default = "", \
-                          dest = "DINGDING_SECRET", \
-                          help = "dingding secret, see https://developers.dingtalk.com/document/app/custom-robot-access", \
+parser.add_argument("--dingtalk-secret", default = "", \
+                          dest = "DINGTALK_SECRET", \
+                          help = "dingtalk secret, see https://developers.dingtalk.com/document/app/custom-robot-access", \
                           required = False)
 
 # %% main
@@ -234,17 +234,17 @@ if __name__ == '__main__':
     telegram_token = args.TELEGRAM_TOKEN
     telegram_chat_id = args.TELEGRAM_CHAT_ID
     telegram_proxy = args.TELEGRAM_PROXY
-    dingding_token = args.DINGDING_TOKEN
-    dingding_secret = args.DINGDING_SECRET
+    dingtalk_token = args.DINGTALK_TOKEN
+    dingtalk_secret = args.DINGTALK_SECRET
 
     def exit_handler():
         # telegram_bot
         if telegram_token != "":
             telegram_bot = Telegram_bot()
             telegram_bot.ping(telegram_token, telegram_chat_id, log_stringIO.getvalue(), telegram_proxy)
-        if dingding_token != "":
-            dingding_bot = Dingding_bot()
-            dingding_bot.ping(dingding_token, dingding_secret, log_stringIO.getvalue())
+        if dingtalk_token != "":
+            dingtalk_bot = Dingding_bot()
+            dingtalk_bot.ping(dingtalk_token, dingtalk_secret, log_stringIO.getvalue())
 
     atexit.register(exit_handler)
 
