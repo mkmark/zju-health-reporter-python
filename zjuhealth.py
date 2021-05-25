@@ -174,6 +174,24 @@ class Telegram_bot():
         else:
             requests.get(url)
 
+# %% dingding bot
+import time
+import hmac
+import hashlib
+import base64
+import urllib.parse
+class Dingding_bot():
+    def ping(self, access_token, secret, text):
+        timestamp = str(round(time.time() * 1000))
+        secret = 'this is secret'
+        secret_enc = secret.encode('utf-8')
+        string_to_sign = '{}\n{}'.format(timestamp, secret)
+        string_to_sign_enc = string_to_sign.encode('utf-8')
+        hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+        sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+        url = "https://oapi.dingtalk.com/robot/send?access_token="+access_token+"&timestamp="+timestamp+"&sign="+sign
+        requests.get(url)
+
 # %% parse args
 parser = argparse.ArgumentParser(description="""
 This tool report status to healthreport.zju.edu.cn
@@ -186,7 +204,7 @@ parser.add_argument("-p", dest = "PASSWORD", \
                           required = True)
 parser.add_argument("--telegram-token", default = "", \
                           dest = "TELEGRAM_TOKEN", \
-                          help = "telegram tokenm, like \"123456789:ABcsdsfarwegssrgw3erw34gbw5b5rw2\"", \
+                          help = "telegram token, like \"123456789:ABcsdsfarwegssrgw3erw34gbw5b5rw2\"", \
                           required = False)
 parser.add_argument("--telegram-chat_id", default = "", \
                           dest = "TELEGRAM_CHAT_ID", \
@@ -195,6 +213,14 @@ parser.add_argument("--telegram-chat_id", default = "", \
 parser.add_argument("--telegram-proxy", default = "", \
                           dest = "TELEGRAM_PROXY", \
                           help = "telegram proxy like \'socks5://127.0.0.1:1080\'", \
+                          required = False)
+parser.add_argument("--dingding-token", default = "", \
+                          dest = "DINGDING_TOKEN", \
+                          help = "dingding access_token, see https://developers.dingtalk.com/document/app/custom-robot-access", \
+                          required = False)
+parser.add_argument("--dingding-secret", default = "", \
+                          dest = "DINGDING_SECRET", \
+                          help = "dingding secret, see https://developers.dingtalk.com/document/app/custom-robot-access", \
                           required = False)
 
 # %% main
@@ -205,12 +231,17 @@ if __name__ == '__main__':
     telegram_token = args.TELEGRAM_TOKEN
     telegram_chat_id = args.TELEGRAM_CHAT_ID
     telegram_proxy = args.TELEGRAM_PROXY
+    dingding_token = args.DINGDING_TOKEN
+    dingding_secret = args.DINGDING_SECRET
 
     def exit_handler():
         # telegram_bot
         if telegram_token != "":
             telegram_bot = Telegram_bot()
             telegram_bot.ping(telegram_token, telegram_chat_id, log_stringIO.getvalue(), telegram_proxy)
+        if dingding_token != "":
+            dingding_bot = Dingding_bot()
+            dingding_bot.ping(dingding_token, dingding_secret, log_stringIO.getvalue())
 
     atexit.register(exit_handler)
 
