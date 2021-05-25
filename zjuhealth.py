@@ -183,14 +183,16 @@ import urllib.parse
 class Dingding_bot():
     def ping(self, access_token, secret, text):
         timestamp = str(round(time.time() * 1000))
-        secret = 'this is secret'
         secret_enc = secret.encode('utf-8')
         string_to_sign = '{}\n{}'.format(timestamp, secret)
         string_to_sign_enc = string_to_sign.encode('utf-8')
         hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
         sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
         url = "https://oapi.dingtalk.com/robot/send?access_token="+access_token+"&timestamp="+timestamp+"&sign="+sign
-        requests.get(url)
+        headers = {'Content-Type': 'application/json'}
+        data = '{"msgtype": "text","text": {"content":"'+text+'"}}'
+        res=requests.post(url=url, data=data, headers=headers)
+        #logger.info(res.content)
 
 # %% parse args
 parser = argparse.ArgumentParser(description="""
@@ -227,6 +229,7 @@ parser.add_argument("--dingding-secret", default = "", \
 if __name__ == '__main__':
     args = parser.parse_args()
     username = args.USERNAME
+    logger.info('task start: ' + username)
     password = args.PASSWORD
     telegram_token = args.TELEGRAM_TOKEN
     telegram_chat_id = args.TELEGRAM_CHAT_ID
