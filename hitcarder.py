@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import requests, json, re
 import time, datetime, os
+from tqdm import tqdm
 import getpass
+import random
 from halo import Halo
 from apscheduler.schedulers.blocking import BlockingScheduler
 
@@ -135,7 +137,7 @@ def main(username, password, delay=4):
     """
     print("\n[Base Time] %s" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # Add random delay
-    sleep_time = random.randint(0, 3600 * delay) # delay time(hour)
+    sleep_time = random.randint(0, 3600 * int(delay)) # delay time(hour)
     #time.sleep(sleep_time)
     print('Delay for {}s'.format(sleep_time))
     for i in tqdm(range(sleep_time)):
