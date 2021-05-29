@@ -126,14 +126,22 @@ class DecodeError(Exception):
     pass
 
 
-def main(username, password):
+def main(username, password, delay=4):
     """Hit card process
 
     Arguments:
         username: (str) 浙大统一认证平台用户名（一般为学号）
         password: (str) 浙大统一认证平台密码
     """
-    print("\n[Time] %s" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("\n[Base Time] %s" % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # Add random delay
+    sleep_time = random.randint(0, 3600 * delay) # delay time(hour)
+    #time.sleep(sleep_time)
+    print('Delay for {}s'.format(sleep_time))
+    for i in tqdm(range(sleep_time)):
+        time.sleep(1)
+
+    print("[Start Time] %s" %datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print("🚌 打卡任务启动")
     spinner = Halo(text='Loading', spinner='dots')
     spinner.start('正在新建打卡实例...')
@@ -175,13 +183,15 @@ if __name__ == "__main__":
         password = configs["password"]
         hour = configs["schedule"]["hour"]
         minute = configs["schedule"]["minute"]
+        delay = configs["schedule"]["delay"]
     else:
         username = input("👤 浙大统一认证用户名: ")
         password = getpass.getpass('🔑 浙大统一认证密码: ')
         print("⏲  请输入定时时间（默认每天6:05）")
         hour = input("\thour: ") or 6
         minute = input("\tminute: ") or 5
-    main(username, password)
+        delay = input("\tdelay: ") or 5
+    main(username, password, delay)
 
     # Schedule task
     scheduler = BlockingScheduler()
