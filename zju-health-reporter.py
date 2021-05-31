@@ -196,7 +196,7 @@ class Dingding_bot():
 
 # %% parse args
 parser = argparse.ArgumentParser(description="""
-This tool report status to healthreport.zju.edu.cn
+This tool reports status to healthreport.zju.edu.cn
 """)
 parser.add_argument("-u", dest = "USERNAME", \
                           help = "username", \

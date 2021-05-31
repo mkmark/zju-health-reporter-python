@@ -1,6 +1,6 @@
 # zju-health-reporter
 
-This tool report status to healthreport.zju.edu.cn after a random time within 2 minutes (can be skipped by specifying '--now')
+This tool reports status to healthreport.zju.edu.cn after a random time within 2 minutes (can be skipped by specifying '--now')
 
 A robot can be configured for result push..
 
@@ -24,7 +24,7 @@ usage: zju-health-reporter.py [-h] -u USERNAME -p PASSWORD [--now] [--telegram-t
                               [--telegram-chat_id TELEGRAM_CHAT_ID] [--telegram-proxy TELEGRAM_PROXY]
                               [--dingtalk-token DINGTALK_TOKEN] [--dingtalk-secret DINGTALK_SECRET]
 
-This tool report status to healthreport.zju.edu.cn
+This tool reports status to healthreport.zju.edu.cn
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -45,6 +45,8 @@ optional arguments:
 
 ## example
 
+run with assigned dingtalk bot
+
 ```
-python zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+python3 zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
 ```
