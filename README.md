@@ -1,5 +1,7 @@
 # zju-health-reporter
 
+浙大钉钉自动健康打卡
+
 This tool reports status to healthreport.zju.edu.cn after a random time within 2 minutes (can be skipped by specifying '--now')
 
 A robot can be configured for result push..
