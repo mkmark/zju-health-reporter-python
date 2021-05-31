@@ -1,4 +1,4 @@
-# zjuhealth
+# zju-health-reporter
 
 This tool report status to healthreport.zju.edu.cn after a random time within 2 minutes (can be skipped by specifying '--now')
 
@@ -19,10 +19,10 @@ $ pip3 install -r requirements.txt
 ## usage
 
 ```bash
-$ python zjuhealth.py -h
-usage: zjuhealth.py [-h] -u USERNAME -p PASSWORD [--now] [--telegram-token TELEGRAM_TOKEN]
-                    [--telegram-chat_id TELEGRAM_CHAT_ID] [--telegram-proxy TELEGRAM_PROXY]
-                    [--dingtalk-token DINGTALK_TOKEN] [--dingtalk-secret DINGTALK_SECRET]
+$ python zju-health-reporter.py -h
+usage: zju-health-reporter.py [-h] -u USERNAME -p PASSWORD [--now] [--telegram-token TELEGRAM_TOKEN]
+                              [--telegram-chat_id TELEGRAM_CHAT_ID] [--telegram-proxy TELEGRAM_PROXY]
+                              [--dingtalk-token DINGTALK_TOKEN] [--dingtalk-secret DINGTALK_SECRET]
 
 This tool report status to healthreport.zju.edu.cn
 
@@ -38,8 +38,13 @@ optional arguments:
   --telegram-proxy TELEGRAM_PROXY
                         telegram proxy like 'socks5://127.0.0.1:1080'
   --dingtalk-token DINGTALK_TOKEN
-                        dingtalk access_token, see https://developers.dingtalk.com/document/app/custom-
-                        robot-access
+                        dingtalk access_token, see https://developers.dingtalk.com/document/app/custom-robot-access
   --dingtalk-secret DINGTALK_SECRET
                         dingtalk secret, must be set with '--dingtalk-token'
+```
+
+## example
+
+```
+python zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
 ```
