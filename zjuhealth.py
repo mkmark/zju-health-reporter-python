@@ -204,13 +204,19 @@ parser.add_argument("-u", dest = "USERNAME", \
 parser.add_argument("-p", dest = "PASSWORD", \
                           help = "password", \
                           required = True)
+parser.add_argument("--now", default = False, \
+                          dest = "NOW", \
+                          help = "skip sleep time and execute now", \
+                          action='store_const', \
+                          const = True, \
+                          required = False)
 parser.add_argument("--telegram-token", default = "", \
                           dest = "TELEGRAM_TOKEN", \
-                          help = "telegram token, like \"123456789:ABcsdsfarwegssrgw3erw34gbw5b5rw2\"", \
+                          help = "telegram token, see https://core.telegram.org/bots", \
                           required = False)
 parser.add_argument("--telegram-chat_id", default = "", \
                           dest = "TELEGRAM_CHAT_ID", \
-                          help = "telegram chat id, like \"-12345678\"", \
+                          help = "telegram chat id, must be set with \'--telegram-token\'", \
                           required = False)
 parser.add_argument("--telegram-proxy", default = "", \
                           dest = "TELEGRAM_PROXY", \
@@ -222,7 +228,7 @@ parser.add_argument("--dingtalk-token", default = "", \
                           required = False)
 parser.add_argument("--dingtalk-secret", default = "", \
                           dest = "DINGTALK_SECRET", \
-                          help = "dingtalk secret, see https://developers.dingtalk.com/document/app/custom-robot-access", \
+                          help = "dingtalk secret, must be set with \'--dingtalk-token\'", \
                           required = False)
 
 # %% main
@@ -231,6 +237,7 @@ if __name__ == '__main__':
     username = args.USERNAME
     logger.info('task start: ' + username)
     password = args.PASSWORD
+    now = args.NOW
     telegram_token = args.TELEGRAM_TOKEN
     telegram_chat_id = args.TELEGRAM_CHAT_ID
     telegram_proxy = args.TELEGRAM_PROXY
@@ -248,11 +255,12 @@ if __name__ == '__main__':
 
     atexit.register(exit_handler)
 
-    # sleep random
-    sleep_time = random.randint(0,120)
-    logger.info('sleep %s sec', sleep_time)
-    # Wait for sleep_time seconds
-    time.sleep(sleep_time)
+    if not now:
+        # sleep random
+        sleep_time = random.randint(0,120)
+        logger.info('sleep %s sec', sleep_time)
+        # Wait for sleep_time seconds
+        time.sleep(sleep_time)
 
     # login
     hit_carder = HitCarder(username, password)
