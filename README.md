@@ -4,18 +4,16 @@
 
 This tool reports status to healthreport.zju.edu.cn after a random time within 2 minutes (can be skipped by specifying '--now')
 
-A robot can be configured for result push..
-
 Forked from [Tishacy/ZJU-nCov-Hitcarder](https://github.com/Tishacy/ZJU-nCov-Hitcarder)
 
 CLI version for better implementation with crontab, schtasks, etc.
 
-fixed "请求非法" due to python header
+A robot can be configured for result push.
 
 ## prerequisite
 
 ```bash
-$ pip3 install -r requirements.txt
+$ pip install requests
 ```
 
 ## usage
@@ -47,8 +45,16 @@ optional arguments:
 
 ## example
 
+minimun instant run
+
+```
+python3 zju-health-reporter.py -u "user" -p "password" --now
+```
+
 run with assigned dingtalk bot
 
 ```
 python3 zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
 ```
+
+the program works best with [crontab](https://en.wikipedia.org/wiki/Cron) / schtasks (Windows Task scheduler, Windows计划任务程序)
