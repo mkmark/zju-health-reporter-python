@@ -20,9 +20,10 @@ $ pip install requests
 
 ```bash
 $ python zju-health-reporter.py -h
-usage: zju-health-reporter.py [-h] -u USERNAME -p PASSWORD [--now] [--telegram-token TELEGRAM_TOKEN]
-                              [--telegram-chat_id TELEGRAM_CHAT_ID] [--telegram-proxy TELEGRAM_PROXY]
-                              [--dingtalk-token DINGTALK_TOKEN] [--dingtalk-secret DINGTALK_SECRET]
+usage: zju-health-reporter.py [-h] -u USERNAME -p PASSWORD [--address ADDRESS] [--area AREA] [--city CITY] [--now]
+                              [--telegram-token TELEGRAM_TOKEN] [--telegram-chat_id TELEGRAM_CHAT_ID]
+                              [--telegram-proxy TELEGRAM_PROXY] [--dingtalk-token DINGTALK_TOKEN]
+                              [--dingtalk-secret DINGTALK_SECRET]
 
 This tool reports status to healthreport.zju.edu.cn
 
