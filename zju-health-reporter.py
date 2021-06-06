@@ -98,27 +98,38 @@ class HitCarder(object):
         today = datetime.date.today()
         return "%4d%02d%02d" % (today.year, today.month, today.day)
 
-    def get_info(self, html=None):
+    def get_info(self, address=None, area=None, city=None, html=None):
         """Get hit card info, which is the old info with updated new time."""
         if not html:
             res = self.sess.get(self.base_url)
             html = res.content.decode()
 
-        try:
-            old_infos = re.findall(r'oldInfo: ({[^\n]+})', html)
-            if len(old_infos) != 0:
-                old_info = json.loads(old_infos[0])
-            else:
-                raise RegexMatchError("未发现缓存信息，请先至少手动成功打卡一次再运行脚本")
-
+        # first try to get oldinfo
+        old_infos = re.findall(r'oldInfo: ({[^\n]+})', html)
+        if len(old_infos) != 0:
+            old_info = json.loads(old_infos[0])
             new_info_tmp = json.loads(re.findall(r'def = ({[^\n]+})', html)[0])
+
             new_id = new_info_tmp['id']
             name = re.findall(r'realname: "([^\"]+)",', html)[0]
             number = re.findall(r"number: '([^\']+)',", html)[0]
-        except IndexError as err:
-            raise RegexMatchError('Relative info not found in html with regex: ' + str(err))
-        except json.decoder.JSONDecodeError as err:
-            raise DecodeError('JSON decode error: ' + str(err))
+        else:
+            logging.info('old_info not found in html, require additional location info')
+            if address==None or area==None or city==None:
+                logging.error('additional location info not found')
+                exit()
+            else:
+                logging.info('additional location info found')
+
+            old_infos = re.findall(r'def = ({[^\n]+})', html)
+            old_info = json.loads(old_infos[0])
+            old_info['address'] = address
+            old_info['area'] = area
+            old_info['city'] = city
+
+            new_id = old_info['id']
+            name = re.findall(r'realname: "([^\"]+)",', html)[0]
+            number = re.findall(r"number: '([^\']+)',", html)[0]
 
         new_info = old_info.copy()
         new_info['id'] = new_id
@@ -204,6 +215,18 @@ parser.add_argument("-u", dest = "USERNAME", \
 parser.add_argument("-p", dest = "PASSWORD", \
                           help = "password", \
                           required = True)
+parser.add_argument("--address", \
+                          dest = "ADDRESS", \
+                          help = "address override", \
+                          required = False)
+parser.add_argument("--area", \
+                          dest = "AREA", \
+                          help = "area override", \
+                          required = False)
+parser.add_argument("--city", \
+                          dest = "CITY", \
+                          help = "city override", \
+                          required = False)
 parser.add_argument("--now", default = False, \
                           dest = "NOW", \
                           help = "skip sleep time and execute now", \
@@ -237,6 +260,15 @@ if __name__ == '__main__':
     username = args.USERNAME
     logger.info('task start: ' + username)
     password = args.PASSWORD
+    address=None
+    if args.ADDRESS != None:
+        address = args.ADDRESS
+    area=None
+    if args.AREA != None:
+        area = args.AREA
+    city=None
+    if args.CITY != None:
+        city = args.CITY
     now = args.NOW
     telegram_token = args.TELEGRAM_TOKEN
     telegram_chat_id = args.TELEGRAM_CHAT_ID
@@ -267,7 +299,7 @@ if __name__ == '__main__':
     temp = hit_carder.login()
 
     # get info
-    temp = hit_carder.get_info()
+    temp = hit_carder.get_info(address=address, area=area, city=city)
 
     # post
     time.sleep(5)

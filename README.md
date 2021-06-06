@@ -30,6 +30,9 @@ optional arguments:
   -h, --help            show this help message and exit
   -u USERNAME           username
   -p PASSWORD           password
+  --address ADDRESS     address override
+  --area AREA           area override
+  --city CITY           city override
   --now                 skip sleep time and execute now
   --telegram-token TELEGRAM_TOKEN
                         telegram token, see https://core.telegram.org/bots
@@ -43,6 +46,8 @@ optional arguments:
                         dingtalk secret, must be set with '--dingtalk-token'
 ```
 
+beta: if prompted 'require additional location info', you will have to input your location manually. See example.
+
 ## example
 
 minimun instant run
@@ -55,6 +60,12 @@ run with assigned dingtalk bot
 
 ```
 python3 zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+```
+
+beta: manually override location info:
+
+```
+python3 zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" --address "浙江省嘉兴市海宁市硖石街道西粮路浙江大学海宁国际校区" --area "浙江省 嘉兴市 海宁市" --city "嘉兴市"
 ```
 
 the program works best with [crontab](https://en.wikipedia.org/wiki/Cron) / schtasks (Windows Task scheduler, Windows计划任务程序)
