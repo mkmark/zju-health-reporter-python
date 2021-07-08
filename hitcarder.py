@@ -194,11 +194,14 @@ if __name__ == "__main__":
         hour = input("\thour: ") or 6
         minute = input("\tminute: ") or 5
         delay = input("\tdelay: ") or 5
+    
+    assert int(delay)+int(hour) < 24, f'打卡时间可能超过当天，建议将delay调整至 '+ str(23-int(hour))
+        
     main(username, password, delay)
 
     # Schedule task
     scheduler = BlockingScheduler()
-    scheduler.add_job(main, 'cron', args=[username, password], hour=hour, minute=minute)
+    scheduler.add_job(main, 'cron', args=[username, password, delay], hour=hour, minute=minute)
     print('⏰ 已启动定时程序，每天 %02d:%02d 为您打卡' % (int(hour), int(minute)))
     print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
 
