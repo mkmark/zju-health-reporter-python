@@ -1,5 +1,7 @@
 # ZJU-nCov-Hitcarder
 
+> 🚀 新版本迁移至: [Tishacy/BatchHitcarder](https://github.com/Tishacy/BatchHitcarder)，提供命令行工具，支持多人多任务、日志、消息推送等功能。
+
 浙大nCov肺炎健康打卡定时自动脚本
 
  - 可定时，默认为每天6点5分
