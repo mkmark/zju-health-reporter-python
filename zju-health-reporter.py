@@ -85,7 +85,8 @@ class HitCarder(object):
         res = self.sess.post(url=self.login_url, data=data)
         # check if login successfully
         if '统一身份认证' in res.content.decode():
-            raise LoginError('登录失败，请核实账号密码重新登录')
+            logging.error('username or password incorrect')
+            exit()
         return self.sess
 
     def post(self):
