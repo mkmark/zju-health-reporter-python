@@ -81,6 +81,12 @@ class HitCarder(object):
             new_id = new_info_tmp['id']
             name = re.findall(r'realname: "([^\"]+)",', html)[0]
             number = re.findall(r"number: '([^\']+)',", html)[0]
+            mysterious_vals = re.findall(r'"f6f259ba6791b79b64e0559fbe41050d":"([^\"]+)"', html)
+            if len(mysterious_vals) != 0:
+                mysterious_val = mysterious_vals[0]
+            else:
+                self.status = "NO_MYSTERIOUS_KEY"
+                raise RegexMatchError("No mysterious key is found.")
         except IndexError as err:
             raise RegexMatchError('Relative info not found in html with regex: ' + str(err))
         except json.decoder.JSONDecodeError as err:
@@ -101,6 +107,12 @@ class HitCarder(object):
         new_info['jcqzrq'] = ""
         new_info['gwszdd'] = ""
         new_info['szgjcs'] = ""
+        new_info['szsqsfybl'] = 0
+        new_info['sfygtjzzfj'] = 0
+        new_info['gtjzzfjsj'] = ""
+        new_info['zgfx14rfhsj'] = ""
+        new_info['23676ad88cb0953fa0e229b32e886f62'] = int(time.time())
+        new_info['f6f259ba6791b79b64e0559fbe41050d'] = mysterious_val
         self.info = new_info
         return new_info
 
