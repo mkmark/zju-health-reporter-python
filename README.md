@@ -13,7 +13,8 @@
 
 <img src="https://github.com/Tishacy/ZJU-nCov-Hitcarder/raw/master/demo.png" width="500px"/>
 
-> 感谢[conv1d](https://github.com/conv1d)同学，已使用requests直接登录浙大统一认证平台，不再依赖phantomjs
+> Fix bugs: 
+> - 修复了 "请获取定位信息或者选取填写所在位置" 而无法提交表单的错误。
 
 ## Usage
 
