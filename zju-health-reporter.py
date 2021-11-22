@@ -7,6 +7,8 @@ import logging
 import random
 import argparse
 
+import json5
+
 # %% logger
 
 # # These two lines enable debugging at httplib level (requests->urllib3->http.client)
@@ -32,7 +34,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 handler_console = logging.StreamHandler()
-handler_console.setLevel(logging.INFO)
+handler_console.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler_console.setFormatter(formatter)
 
@@ -114,41 +116,114 @@ class HitCarder(object):
             new_id = new_info_tmp['id']
             name = re.findall(r'realname: "([^\"]+)",', html)[0]
             number = re.findall(r"number: '([^\']+)',", html)[0]
-        else:
-            logging.info('old_info not found in html, require additional location info')
-            if address==None or area==None or city==None:
-                logging.error('additional location info not found')
-                exit()
-            else:
-                logging.info('additional location info found')
 
-            old_infos = re.findall(r'def = ({[^\n]+})', html)
-            old_info = json.loads(old_infos[0])
-            old_info['address'] = address
-            old_info['area'] = area
-            old_info['city'] = city
+            new_info = old_info.copy()
+            # 20211123 this value actually does not change when using old info
+            new_info['id'] = new_id
+            # 20211123 no such property
+            #new_info['name'] = name
+            # 20211123 no such property
+            #new_info['number'] = number
+            new_info["date"] = self.get_date()
+            # 20211123 this value actually does not change when using old info
+            new_info["created"] = round(time.time())
 
-            new_id = old_info['id']
-            name = re.findall(r'realname: "([^\"]+)",', html)[0]
-            number = re.findall(r"number: '([^\']+)',", html)[0]
+            # form change
+            # ?
+            new_info.pop('created_uid')
+            # ?
+            new_info['jrsfqzy'] = ''
+            # ?
+            new_info['jrsfqzfy'] = ''
+            # ?
+            new_info['sfyqjzgc'] = ''
+            # ?
+            new_info['sfjcqz'] = ''
+            # ?
+            new_info['jcqzrq'] = ''
+            # ?
+            new_info['szgjcs'] = ""
+            # ?
+            new_info['zgfx14rfhsj'] = ""
+            # 2 long strange strings
+            raw_info_2s = re.findall(r'}, def, ({[^}]*})', html)
+            assert len(raw_info_2s)==1
+            raw_info_2 = raw_info_2s[0].replace('\n', '')
+            raw_info_2_d = json5.loads(raw_info_2)
+            new_info.update(raw_info_2_d)
+            # ?
+            new_info.pop('jrdqtlqk')
 
-        new_info = old_info.copy()
-        new_info['id'] = new_id
-        new_info['name'] = name
-        new_info['number'] = number
-        new_info["date"] = self.get_date()
-        new_info["created"] = round(time.time())
-        # form change
-        new_info['jrdqtlqk[]'] = 0
-        new_info['jrdqjcqk[]'] = 0
-        new_info['sfsqhzjkk'] = 1  # 是否申领杭州健康码
-        new_info['sqhzjkkys'] = 1  # 杭州健康吗颜色，1:绿色 2:红色 3:黄色
-        new_info['sfqrxxss'] = 1  # 是否确认信息属实
-        new_info['jcqzrq'] = ""
-        new_info['gwszdd'] = ""
-        new_info['szgjcs'] = ""
-        self.info = new_info
-        return new_info
+            self.info = new_info
+            return new_info
+
+        # oldinfo not found, try new method
+        # all below are dangerous as no guarantee is promised, uncomment at risk
+        # logging.info('old_info not found in html')
+        # if address==None or area==None or city==None:
+        #     logging.error('additional location info not found')
+        #     exit()
+        # else:
+        #     logging.info('additional location info found')
+        # raw_info_0s = re.findall(r'var def = ({[^}]*})', html)
+        # assert len(raw_info_0s)==1
+        # raw_info_1s = re.findall(r'info: \$\.extend\(({[^}]*})', html)
+        # assert len(raw_info_1s)==1
+        # raw_info_2s = re.findall(r'}, def, ({[^}]*})', html)
+        # assert len(raw_info_2s)==1
+
+        # raw_info_0 = raw_info_0s[0]
+        # raw_info_1 = raw_info_1s[0]
+        # raw_info_2 = raw_info_2s[0].replace('\n', '')
+
+        # raw_info_0_d = json5.loads(raw_info_0)
+        # raw_info_1_d = json5.loads(raw_info_1)
+        # raw_info_2_d = json5.loads(raw_info_2)
+
+        # raw_info_d = {}
+        # raw_info_d.update(raw_info_0_d)
+        # raw_info_d.update(raw_info_1_d)
+        # raw_info_d.update(raw_info_2_d)
+
+
+        # new_info_d = raw_info_d
+
+        # # 是否有密切接触者入境
+        # new_info_d['sfymqjczrj'] = 0
+        # # 是否确认信息属实
+        # new_info_d['sfqrxxss'] = 1
+        # # 今日是否因发热外的其他原因请假未到岗（教职工）或未返校（学生）？
+        # new_info_d['sfqtyyqjwdg'] = 0
+        # # 今日是否因发热请假未到岗（教职工）或未返校（学生）？ 
+        # new_info_d['sffrqjwdg'] = 0
+        # # ?
+        # new_info_d.pop('jrdqtlqk')
+        # # 是否意向接种新冠疫苗
+        # new_info_d['sfyxjzxgym'] = 1
+        # # 是否不宜接种人群
+        # new_info_d['sfbyjzrq'] = 5
+        # # 接种新冠疫苗情况
+        # new_info_d['jzxgymqk'] = 2
+        # # address
+        # new_info_d['address'] = address
+        # new_info_d['area'] = area
+        # new_info_d['city'] = city
+        # new_info_d['geo_api_info'] = geo_api_info
+        # # 是否在校
+        # new_info_d['sfzx'] = 1
+        # # 是否申领杭州健康码
+        # new_info_d['sfsqhzjkk'] = 1
+        # # 杭州健康吗颜色，1:绿色 2:红色 3:黄色
+        # new_info_d['sqhzjkkys'] = 1
+        # # ?分析原因
+        # new_info_d['fxyy'] = ''
+        # # ?检测结果
+        # new_info_d['jcjg'] = ''
+        # # ?14日
+        # new_info_d['zgfx14rfhsj'] = ''
+
+        # self.info = new_info_d
+        # return new_info_d
 
     def _rsa_encrypt(self, password_str, e_str, M_str):
         password_bytes = bytes(password_str, 'ascii')
@@ -228,6 +303,10 @@ parser.add_argument("--city", \
                           dest = "CITY", \
                           help = "city override", \
                           required = False)
+parser.add_argument("--geo_api_info", \
+                          dest = "GEO_API_INFO", \
+                          help = "geo_api_info override, dangerous! dEa (unknown property) changes everytime", \
+                          required = False)
 parser.add_argument("--now", default = False, \
                           dest = "NOW", \
                           help = "skip sleep time and execute now", \
@@ -261,15 +340,18 @@ if __name__ == '__main__':
     username = args.USERNAME
     logger.info('task start: ' + username)
     password = args.PASSWORD
-    address=None
+    address = None
     if args.ADDRESS != None:
         address = args.ADDRESS
-    area=None
+    area = None
     if args.AREA != None:
         area = args.AREA
-    city=None
+    city = None
     if args.CITY != None:
         city = args.CITY
+    geo_api_info = None
+    if args.GEO_API_INFO != None:
+        geo_api_info = args.GEO_API_INFO
     now = args.NOW
     telegram_token = args.TELEGRAM_TOKEN
     telegram_chat_id = args.TELEGRAM_CHAT_ID
@@ -290,7 +372,7 @@ if __name__ == '__main__':
 
     if not now:
         # sleep random
-        sleep_time = random.randint(0,120)
+        sleep_time = random.randint(0,1200)
         logger.info('sleep %s sec', sleep_time)
         # Wait for sleep_time seconds
         time.sleep(sleep_time)
@@ -310,4 +392,5 @@ if __name__ == '__main__':
     elif str(res['m']) == '今天已经填报了':
         logger.info('task already finished today')
     else:
-        logger.info('task failed')
+        logger.warning('task failed')
+        logger.info(res)
