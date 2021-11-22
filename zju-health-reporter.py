@@ -101,6 +101,38 @@ class HitCarder(object):
         today = datetime.date.today()
         return "%4d%02d%02d" % (today.year, today.month, today.day)
 
+    def fill_data(self, info_d):
+        # 是否有密切接触者入境
+        info_d['sfymqjczrj'] = 0
+        # 是否确认信息属实
+        info_d['sfqrxxss'] = 1
+        # 今日是否因发热外的其他原因请假未到岗（教职工）或未返校（学生）？
+        info_d['sfqtyyqjwdg'] = 0
+        # 今日是否因发热请假未到岗（教职工）或未返校（学生）？ 
+        info_d['sffrqjwdg'] = 0
+        # ?
+        info_d.pop('jrdqtlqk')
+        # 是否意向接种新冠疫苗
+        info_d['sfyxjzxgym'] = 1
+        # 是否不宜接种人群
+        info_d['sfbyjzrq'] = 5
+        # 接种新冠疫苗情况
+        info_d['jzxgymqk'] = 2
+        # 是否在校
+        info_d['sfzx'] = 1
+        # 是否申领杭州健康码
+        info_d['sfsqhzjkk'] = 1
+        # 杭州健康吗颜色，1:绿色 2:红色 3:黄色
+        info_d['sqhzjkkys'] = 1
+        # ?分析原因
+        info_d['fxyy'] = ''
+        # ?检测结果
+        info_d['jcjg'] = ''
+        # ?14日
+        info_d['zgfx14rfhsj'] = ''
+
+        return info_d
+
     def get_info(self, address=None, area=None, city=None, html=None):
         """Get hit card info, which is the old info with updated new time."""
         if not html:
@@ -142,9 +174,9 @@ class HitCarder(object):
             # ?
             new_info['jcqzrq'] = ''
             # ?
-            new_info['szgjcs'] = ""
+            new_info['szgjcs'] = ''
             # ?
-            new_info['zgfx14rfhsj'] = ""
+            new_info['zgfx14rfhsj'] = ''
             # 2 long strange strings
             raw_info_2s = re.findall(r'}, def, ({[^}]*})', html)
             assert len(raw_info_2s)==1
@@ -154,11 +186,14 @@ class HitCarder(object):
             # ?
             new_info.pop('jrdqtlqk')
 
+            # consider force refill
+            #new_info = self.fill_data(new_info)
+
             self.info = new_info
             return new_info
 
-        # oldinfo not found, try new method
-        # all below are dangerous as no guarantee is promised, uncomment at risk
+        # # oldinfo not found, try new method
+        # # all below are dangerous as no guarantee is promised, uncomment at risk
         # logging.info('old_info not found in html')
         # if address==None or area==None or city==None:
         #     logging.error('additional location info not found')
@@ -185,42 +220,14 @@ class HitCarder(object):
         # raw_info_d.update(raw_info_1_d)
         # raw_info_d.update(raw_info_2_d)
 
-
         # new_info_d = raw_info_d
+        # new_info_d = self.fill_data(new_info_d)
 
-        # # 是否有密切接触者入境
-        # new_info_d['sfymqjczrj'] = 0
-        # # 是否确认信息属实
-        # new_info_d['sfqrxxss'] = 1
-        # # 今日是否因发热外的其他原因请假未到岗（教职工）或未返校（学生）？
-        # new_info_d['sfqtyyqjwdg'] = 0
-        # # 今日是否因发热请假未到岗（教职工）或未返校（学生）？ 
-        # new_info_d['sffrqjwdg'] = 0
-        # # ?
-        # new_info_d.pop('jrdqtlqk')
-        # # 是否意向接种新冠疫苗
-        # new_info_d['sfyxjzxgym'] = 1
-        # # 是否不宜接种人群
-        # new_info_d['sfbyjzrq'] = 5
-        # # 接种新冠疫苗情况
-        # new_info_d['jzxgymqk'] = 2
         # # address
-        # new_info_d['address'] = address
-        # new_info_d['area'] = area
-        # new_info_d['city'] = city
-        # new_info_d['geo_api_info'] = geo_api_info
-        # # 是否在校
-        # new_info_d['sfzx'] = 1
-        # # 是否申领杭州健康码
-        # new_info_d['sfsqhzjkk'] = 1
-        # # 杭州健康吗颜色，1:绿色 2:红色 3:黄色
-        # new_info_d['sqhzjkkys'] = 1
-        # # ?分析原因
-        # new_info_d['fxyy'] = ''
-        # # ?检测结果
-        # new_info_d['jcjg'] = ''
-        # # ?14日
-        # new_info_d['zgfx14rfhsj'] = ''
+        # info_d['address'] = address
+        # info_d['area'] = area
+        # info_d['city'] = city
+        # info_d['geo_api_info'] = geo_api_info
 
         # self.info = new_info_d
         # return new_info_d
