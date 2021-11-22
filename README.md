@@ -2,7 +2,7 @@
 
 浙大钉钉自动健康打卡
 
-This tool reports status to healthreport.zju.edu.cn after a random time within 2 minutes (can be skipped by specifying '--now')
+This tool reports status to healthreport.zju.edu.cn after a random time within 2 hours (can be skipped by specifying '--now')
 
 Forked from [Tishacy/ZJU-nCov-Hitcarder](https://github.com/Tishacy/ZJU-nCov-Hitcarder)
 
@@ -20,10 +20,10 @@ $ pip install requests
 
 ```bash
 $ python zju-health-reporter.py -h
-usage: zju-health-reporter.py [-h] -u USERNAME -p PASSWORD [--address ADDRESS] [--area AREA] [--city CITY] [--now]
-                              [--telegram-token TELEGRAM_TOKEN] [--telegram-chat_id TELEGRAM_CHAT_ID]
-                              [--telegram-proxy TELEGRAM_PROXY] [--dingtalk-token DINGTALK_TOKEN]
-                              [--dingtalk-secret DINGTALK_SECRET]
+usage: zju-health-reporter.py [-h] -u USERNAME -p PASSWORD [--address ADDRESS] [--area AREA] [--city CITY]
+                              [--geo_api_info GEO_API_INFO] [--now] [--telegram-token TELEGRAM_TOKEN]
+                              [--telegram-chat_id TELEGRAM_CHAT_ID] [--telegram-proxy TELEGRAM_PROXY]
+                              [--dingtalk-token DINGTALK_TOKEN] [--dingtalk-secret DINGTALK_SECRET]
 
 This tool reports status to healthreport.zju.edu.cn
 
@@ -34,6 +34,8 @@ optional arguments:
   --address ADDRESS     address override
   --area AREA           area override
   --city CITY           city override
+  --geo_api_info GEO_API_INFO
+                        geo_api_info override, dangerous! dEa (unknown property) changes everytime
   --now                 skip sleep time and execute now
   --telegram-token TELEGRAM_TOKEN
                         telegram token, see https://core.telegram.org/bots
@@ -47,7 +49,7 @@ optional arguments:
                         dingtalk secret, must be set with '--dingtalk-token'
 ```
 
-beta: if prompted 'require additional location info', you will have to input your location manually. See example.
+All parameters regarding address override will by default not work for safety concern. Uncomment related code blocks to make it work. Even then this is only useful if prompted 'old_info not found'.
 
 ## example
 
@@ -63,7 +65,8 @@ run with assigned dingtalk bot
 python3 zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
 ```
 
-beta: manually override location info:
+manually override location info (dangerous):
+geo_api_info can be blank.
 
 ```
 python3 zju-health-reporter.py -u "user" -p "password" --dingtalk-token "1234567890123456789012345678901234567890123456789012345678901234" --dingtalk-secret "SEC1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef" --address "浙江省嘉兴市海宁市硖石街道西粮路浙江大学海宁国际校区" --area "浙江省 嘉兴市 海宁市" --city "嘉兴市"
