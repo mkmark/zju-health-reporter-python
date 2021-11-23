@@ -84,13 +84,19 @@ class HitCarder(object):
             'authcode': None,
             '_eventId': 'submit'
         }
-        res = self.sess.post(url=self.login_url, data=data)
-        # check if login successfully
-        if '统一身份认证' in res.content.decode():
-            logging.error('username or password incorrect')
-            exit()
-        return self.sess
 
+        trial_left = 2
+        while trial_left>0 :
+            res = self.sess.post(url=self.login_url, data=data)
+            trial_left -= 1
+            if '统一身份认证' in res.content.decode():
+                logging.error('logging failed, possible username or password incorrect')
+                logging.info(res)
+                logging.info('trying again')
+            else:
+                return self.sess
+        exit()
+        
     def post(self):
         """Post the hit card info."""
         res = self.sess.post(self.save_url, data=self.info)
