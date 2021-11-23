@@ -71,24 +71,24 @@ class HitCarder(object):
 
     def login(self):
         """Login to ZJU platform."""
-        res = self.sess.get(self.login_url)
-        execution = re.search('name="execution" value="(.*?)"', res.text).group(1)
-        res = self.sess.get(url='https://zjuam.zju.edu.cn/cas/v2/getPubKey').json()
-        n, e = res['modulus'], res['exponent']
-        encrypt_password = self._rsa_encrypt(self.password, e, n)
-
-        data = {
-            'username': self.username,
-            'password': encrypt_password,
-            'execution': execution,
-            'authcode': None,
-            '_eventId': 'submit'
-        }
-
         trial_left = 2
-        while trial_left>0 :
+        while trial_left > 0:
+            res = self.sess.get(self.login_url)
+            execution = re.search('name="execution" value="(.*?)"', res.text).group(1)
+            res = self.sess.get(url='https://zjuam.zju.edu.cn/cas/v2/getPubKey').json()
+            n, e = res['modulus'], res['exponent']
+            encrypt_password = self._rsa_encrypt(self.password, e, n)
+
+            data = {
+                'username': self.username,
+                'password': encrypt_password,
+                'execution': execution,
+                'authcode': None,
+                '_eventId': 'submit'
+            }
             res = self.sess.post(url=self.login_url, data=data)
             trial_left -= 1
+            
             if '统一身份认证' in res.content.decode():
                 logging.error('logging failed, possible username or password incorrect')
                 logging.info(res)
