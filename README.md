@@ -1,4 +1,6 @@
-# zju-health-reporter
+# zju-health-reporer
+
+This project is discontinued in favor of https://github.com/mkmark/zju-health-reporter. This project will not work anymore due to server side changes.
 
 浙大钉钉自动健康打卡
 
